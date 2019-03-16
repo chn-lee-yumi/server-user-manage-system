@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>公钥自助登记系统</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.staticfile.org/foundation/5.5.3/css/foundation.min.css" />
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/foundation/5.5.3/js/foundation.min.js"></script>
+  <script src="https://cdn.staticfile.org/foundation/5.5.3/js/vendor/modernizr.js"></script>
+<style>
+</style>
+
+
+<script type="text/javascript">
+$("#tupsubmit").ready(function(){
+	$("#tupsubmit").click(function(){
+		var send={};
+		send.Ticket=$("#ticket").val();
+		send.PublicKey=$("#publickey").val();
+		send.Username=$("#username").val();
+        console.log(send);
+		if(send.Ticket.length!=40||send.Username.length<1){
+			$("#tupsubmit_reply").css("display","block");$("#tupsubmit_reply").text("信息不完整");
+            return;
+		}
+        if(send.PublicKey.length<382){
+			$("#tupsubmit_reply").css("display","block");$("#tupsubmit_reply").text("公钥长度错误");
+            return;
+		}
+        $("#tupsubmit_reply").css("display","none");
+
+		$.post("/api/adduser",send,function(data,status){
+          if(status=="success"){
+            console.log(data);
+            $("#tupsubmit_reply").css("display","block");$("#tupsubmit_reply").text(data.msg);
+          }else {
+          	$("#tupsubmit_reply").css("display","block");$("#tupsubmit_reply").text("提交失败，请检查网络");
+          };
+        },"json");
+	});
+});
+</script>
+
+
+</head>
+<body>
+
+<div class="row" style="display: block; margin-top: 1%">
+        <div>
+            <p><strong>公钥登记帮助</strong></br>
+                公私钥对要求：类型必须为rsa；长度必须至少为2048字节；私钥必须使用密码加密；私钥必须一直处于安全的环境下，未曾泄漏。</br>
+                公钥格式示例：<code>ssh-rsa xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxx</code></br>
+            </p>
+            <p><strong>如果你还没有公私钥对……</strong></br>
+                如果是linux用户，可使用如下命令创建公私钥对：</br>
+                <code>
+                    ssh-keygen -t rsa -b 2048
+                </code></br>
+                如果私钥没有加密，用下面的命令给私钥添加密码：</br>
+                <code>
+                    ssh-keygen -p -f &lt;private key file&gt;
+                </code></br>
+                如果是windows用户，可以按照下面这个指引，使用putty创建公私钥对以及连接服务器：</br>
+                <a href="https://www.ssh.com/ssh/putty/windows/puttygen">PUTTYGEN - KEY GENERATOR FOR PUTTY ON WINDOWS</a></br>
+                看不懂英文的慢慢看……不懂的单词查翻译。就当准备四六级了。注意“Key passphrase”就是私钥的密码。</br>
+            </p>
+            <p><strong>注意：凭据为一次性，提交前请确认用户名和公钥是否正确！</strong></p>
+        </div>
+</div>
+
+<div class="label row" style="background-color: #a0d3e8; display: block; margin-top: 5px">
+
+    <input id="ticket" type="text" placeholder="凭据">
+    <input id="username" type="text" placeholder="用户名">
+    <textarea id="publickey" rows="10" placeholder="公钥"></textarea>
+    <button id="tupsubmit"class="button success" type="submit">提交</button>
+
+    <div id="tupsubmit_reply" data-alert class="alert-box warning" style="display: none";></div>
+
+</div>
+
+
+</body>
+</html>
