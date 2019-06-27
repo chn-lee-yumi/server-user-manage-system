@@ -4,9 +4,7 @@ Description=Server User Management System 服务器用户管理系统 SUMS
 
 [Service]
 WorkingDirectory=/root/sums
-ExecStart=/root/sums/sums
+ExecStart=/root/sums/sums -k NewTicket
 
 [Install]
 WantedBy=multi-user.target
-
-
