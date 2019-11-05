@@ -35,3 +35,7 @@ Usage of ./sums:
 ## 注意事项
 
 需要root权限，故当前部署采用root用户运行。
+
+## 截图
+
+![screenshot](screenshot.png)
